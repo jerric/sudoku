@@ -1,2 +1,2 @@
-# brutalForceSolver
+# Sudoku Solver
 Sudoku Practice

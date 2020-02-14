@@ -1,18 +1,53 @@
 package net.lliira.sudoku.solver;
 
-public class BrutalForceSolver implements SudokuSolver {
-  private static final int SIZE = 9;
-  private static final int BOX = 3;
-  private static final int EMPTY = 0;
+public class BrutalForceSolver extends SudokuSolver {
 
-  private final int[][] board;
+  private static class Cell {
+    private int x;
+    private int y;
 
-  public BrutalForceSolver(final int[][] board) {
-    this.board = board;
+    private Cell(int x, int y) {
+      this.x = x;
+      this.y = y;
+    }
+
+    private boolean next() {
+      if (x == SIZE - 1) {
+        if (y == SIZE - 1) return false ;
+        x =0;
+        y++;
+      } else  x++;
+      return true;
+    }
+
+    public boolean previous() {
+      if (x == 0) {
+        if (y == 0) return false;
+        x = SIZE -1;
+        y--;
+      } else x--;
+      return true;
+    }
+
+    @Override
+    public String toString() {
+      return String.format("(%d,%d)", x, y);
+    }
+  }
+
+  private final boolean recursive;
+
+  public BrutalForceSolver(final int[][] board, boolean recursive) {
+    super(board);
+    this.recursive = recursive;
   }
 
   @Override
   public boolean solve() {
+    return recursive ? solveRecursively() : solveLinearly();
+  }
+
+  private boolean solveRecursively() {
     for (int row = 0; row < SIZE; row++) {
       for (int col = 0; col < SIZE; col++) {
         if (board[row][col] == EMPTY) {
@@ -20,31 +55,53 @@ public class BrutalForceSolver implements SudokuSolver {
             if (isOk(row, col, number)) {
               board[row][col] = number;
 
-              if (solve()) {
+              if (solveRecursively()) {
                 return true;
               } else {
                 board[row][col] = EMPTY;
               }
             }
           }
-
           return false;
         }
       }
     }
-
     return true;
   }
 
-  @Override
-  public void print() {
+  private boolean solveLinearly() {
+    boolean[][] mask = new boolean[SIZE][SIZE];
     for (int row = 0; row < SIZE; row++) {
       for (int col = 0; col < SIZE; col++) {
-        System.out.print(board[row][col]);
-        System.out.print(", ");
+        mask[row][col] = board[row][col] != EMPTY;
       }
-      System.out.println();
     }
+    Cell cell = new Cell(0, 0);
+    boolean hasCell = true;
+    boolean forward = true;
+    int number = 1;
+    while (hasCell) {
+      if (mask[cell.y][cell.x]) {
+        hasCell = forward ? cell.next() : cell.previous();
+        continue;
+      }
+
+      if (!forward) {
+        number = board[cell.y][cell.x] + 1;
+        board[cell.y][cell.x] = EMPTY;
+        forward = true;
+      } else if (number > SIZE) {
+        forward = false;
+        hasCell = cell.previous();
+      } else if (isOk(cell.y, cell.x, number)) {
+        board[cell.y][cell.x] = number;
+        hasCell = cell.next();
+        number = 1;
+      } else {
+        number++;
+      }
+    }
+    return forward;
   }
 
   private boolean isOk(int row, int col, int number) {

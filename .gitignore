@@ -24,7 +24,8 @@ hs_err_pid*
 
 # IntelliJ files
 *.iml
-.idea/
+*/.idea/
 
 # Maven generated files
-target/
+*/target/
+
