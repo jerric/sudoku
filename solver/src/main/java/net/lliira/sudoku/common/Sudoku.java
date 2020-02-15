@@ -5,31 +5,41 @@ public class Sudoku {
   private static final char NEW_ROW = ';';
   private static final int EMPTY = 0;
 
+  private final int degree;
   private final int[][] board = new int[SIZE][SIZE];
 
   public Sudoku(int[][] board) {
+    int degree = 0;
     for (int row = 0; row < SIZE; row++) {
       for (int col = 0; col < SIZE; col++) {
         this.board[row][col] = board[row][col];
+        if (board[row][col] != EMPTY) degree++;
       }
     }
+    this.degree = degree;
   }
 
   public Sudoku(String board) {
-    int row = 0, col = 0;
+    int row = 0, col = 0, degree = 0;
     for (char cell : board.toCharArray()) {
       if (cell == NEW_ROW) {
         row++;
         col = 0;
       } else {
         this.board[row][col] = Integer.parseInt(Character.toString(cell));
+        if (this.board[row][col] != EMPTY) degree++;
         col++;
       }
     }
+    this.degree = degree;
   }
 
   public int[][] get() {
     return board;
+  }
+
+  public int degree() {
+    return degree;
   }
 
   public void flip() {
@@ -97,5 +107,33 @@ public class Sudoku {
       builder.deleteCharAt(builder.length() - 1);
     }
     return builder.toString();
+  }
+
+  @Override
+  public int hashCode() {
+    int code = 0;
+    for (int row = 0; row < SIZE; row++) {
+      for (int col = 0; col < SIZE; col++) {
+        code ^= board[row][col];
+      }
+    }
+    return code;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj instanceof Sudoku) {
+      Sudoku sudoku = (Sudoku) obj;
+      boolean equal = true;
+      for (int row = 0; row < SIZE; row++) {
+        for (int col = 0; col < SIZE; col++) {
+          equal = board[row][col] == sudoku.board[row][col];
+          if (!equal) break;
+        }
+        if (!equal) break;
+      }
+      return equal;
+    }
+    return false;
   }
 }
