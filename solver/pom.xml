@@ -4,10 +4,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>brutalForceSolver-solver</artifactId>
+    <artifactId>lliira-sudoku-solver</artifactId>
     <parent>
-        <artifactId>brutalForceSolver</artifactId>
-        <groupId>net.lliira.brutalForceSolver</groupId>
+        <artifactId>lliira-sudoku</artifactId>
+        <groupId>net.lliira.sudoku</groupId>
         <version>1.0.0</version>
     </parent>
 
