@@ -45,6 +45,10 @@ public class SudokuStorageTest {
       File testDirectory = Files.createTempDirectory("sudoku-test").toFile();
       SudokuStorage storage = new SudokuStorage(testDirectory);
       Assert.assertTrue(storage.addSudoku(new Sudoku(INPUT)));
-      Assert.assertFalse(storage.addSudoku(new Sudoku(INPUT)));
+
+      Sudoku sudoku = new Sudoku(INPUT);
+      Assert.assertFalse(storage.addSudoku(sudoku));
+      sudoku.rotate();
+      Assert.assertFalse(storage.addSudoku(sudoku));
   }
 }
