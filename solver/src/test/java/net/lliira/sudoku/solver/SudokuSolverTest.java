@@ -20,6 +20,22 @@ public class SudokuSolverTest {
     };
   }
 
+
+  private static int[][] badInput() {
+    return new int[][] {
+        {8, 0, 0, 0, 0, 0, 0, 5, 0},
+        {0, 0, 3, 6, 0, 0, 0, 0, 0},
+        {0, 7, 0, 0, 9, 0, 2, 0, 0},
+        {0, 5, 0, 0, 0, 7, 0, 0, 0},
+        {0, 0, 0, 0, 4, 5, 7, 0, 0},
+        {0, 0, 0, 1, 0, 0, 0, 3, 0},
+        {0, 0, 1, 0, 0, 0, 0, 6, 8},
+        {0, 0, 8, 5, 0, 0, 0, 1, 0},
+        {0, 9, 0, 0, 0, 0, 4, 0, 0}
+    };
+  }
+
+
   private static int[][] solution() {
     return new int[][] {
       {8, 1, 2, 7, 5, 3, 6, 4, 9},
@@ -59,6 +75,10 @@ public class SudokuSolverTest {
     solver = new BrutalForceSolver(board, true);
     Assert.assertTrue(solver.solve());
     Assert.assertArrayEquals(solution(), board);
+
+    // bad input, no solution
+    solver = new BrutalForceSolver(badInput(), true);
+    Assert.assertFalse(solver.solve());
   }
 
   @Test
@@ -86,6 +106,10 @@ public class SudokuSolverTest {
     solver = new BrutalForceSolver(board, false);
     Assert.assertTrue(solver.solve());
     Assert.assertArrayEquals(solution(), solver.getBoard());
+
+    // bad input, no solution
+    solver = new BrutalForceSolver(badInput(), false);
+    Assert.assertFalse(solver.solve());
   }
 
   @Test
@@ -94,6 +118,29 @@ public class SudokuSolverTest {
     var solver = new DancingLinksSolver(board);
     Assert.assertTrue(solver.solve());
     Assert.assertArrayEquals(solution(), solver.getBoard());
+
+    // nearly solved puzzle
+    board = solution();
+    board[0][0] = 0;
+    solver = new DancingLinksSolver(board);
+    Assert.assertTrue(solver.solve());
+    Assert.assertArrayEquals(solution(), solver.getBoard());
+
+    board = solution();
+    board[8][8] = 0;
+    solver = new DancingLinksSolver(board);
+    Assert.assertTrue(solver.solve());
+    Assert.assertArrayEquals(solution(), solver.getBoard());
+
+    // fully solved puzzle
+    board = solution();
+    solver = new DancingLinksSolver(board);
+    Assert.assertTrue(solver.solve());
+    Assert.assertArrayEquals(solution(), solver.getBoard());
+
+    // bad input, no solution
+    solver = new DancingLinksSolver(badInput());
+    Assert.assertFalse(solver.solve());
 }
 
     @Test

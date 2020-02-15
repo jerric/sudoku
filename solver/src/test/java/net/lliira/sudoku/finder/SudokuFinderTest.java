@@ -1,7 +1,6 @@
-package net.lliira.sudoku.solver;
+package net.lliira.sudoku.finder;
 
 import net.lliira.sudoku.common.dlx.DancingMatrixHelper;
-import net.lliira.sudoku.finder.DancingLinksFinder;
 import org.junit.Assert;
 import org.junit.Test;
 
