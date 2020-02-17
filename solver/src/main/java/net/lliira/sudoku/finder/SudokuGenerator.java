@@ -63,6 +63,7 @@ public class SudokuGenerator {
   }
 
   public void generate() {
+    logger.info("Starting Generator");
     int count = 0;
     running = true;
     while (running) {
@@ -96,11 +97,11 @@ public class SudokuGenerator {
 
   private Sudoku reduce(Sudoku solution) {
     Sudoku sudoku = reduce1(solution);
-    //    logger.info("Level 1 Reduce: {}", sudoku.degree());
+    logger.info("Level 1 Reduce: {}", sudoku.degree());
     sudoku = reduce2(sudoku, solution, 2);
-    //    logger.info("Level 2 Reduce: {}", sudoku.degree());
-    //    sudoku = reduce2(sudoku, solution, 3);
-    //    logger.info("Level 3 Reduce: {}", sudoku.degree());
+    logger.info("Level 2 Reduce: {}", sudoku.degree());
+    sudoku = reduce2(sudoku, solution, 3);
+    logger.info("Level 3 Reduce: {}", sudoku.degree());
 
     return sudoku;
   }
@@ -136,18 +137,17 @@ public class SudokuGenerator {
       Collections.shuffle(removes);
       List<List<Cell>> adds = Combinator.combinations(getCells(sudoku, true), step - 1);
       Collections.shuffle(adds);
-      //      double total = removes.size() * adds.size();
-      //      long rounds = 0;
+      double total = removes.size() * adds.size();
+      long rounds = 0;
       for (List<Cell> remove : removes) {
         for (Cell cell : remove) sudoku.unset(cell.row, cell.col);
         for (List<Cell> add : adds) {
-          // if (++rounds % 100_000 == 0)
-          //   logger.info("Progress: {}/{} ({}%)", rounds, total, Math.round(rounds / total * 1000)
-          // / 10.0);
+          if (++rounds % 100_000 == 0)
+            logger.info(
+                "Progress: {}/{} ({}%)", rounds, total, Math.round(rounds / total * 1000) / 10.0);
           for (Cell cell : add) sudoku.set(cell.row, cell.col, solution.get(cell.row, cell.col));
           if (finder.find(sudoku, 2).size() == 1) {
-            // logger.info("Reduced: {}->{}, {} rounds\n", previous.degree(), sudoku.degree(),
-            // rounds);
+            logger.info("Reduced: {}->{}, {} rounds\n", previous.degree(), sudoku.degree(), rounds);
             previous = sudoku;
             reduced = true;
             break;
