@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class DancingLinks {
-    private static final int NO_LIMIT = 0;
+    public static final int NO_LIMIT = 0;
 
     private int limit;
     private ColumnNode header;

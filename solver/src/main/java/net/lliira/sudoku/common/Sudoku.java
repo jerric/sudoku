@@ -2,21 +2,15 @@ package net.lliira.sudoku.common;
 
 public class Sudoku {
   public static final int SIZE = 9;
+  public static final int BOX = 3;
   private static final char NEW_ROW = ';';
   private static final int EMPTY = 0;
 
-  private final int degree;
+  private int degree;
   private final int[][] board = new int[SIZE][SIZE];
 
   public Sudoku(int[][] board) {
-    int degree = 0;
-    for (int row = 0; row < SIZE; row++) {
-      for (int col = 0; col < SIZE; col++) {
-        this.board[row][col] = board[row][col];
-        if (board[row][col] != EMPTY) degree++;
-      }
-    }
-    this.degree = degree;
+    this.degree = copy(board, this.board);
   }
 
   public Sudoku(String board) {
@@ -34,12 +28,85 @@ public class Sudoku {
     this.degree = degree;
   }
 
+  public int degree() {
+    return degree;
+  }
+
+  public Sudoku copy(){
+    return new Sudoku(board);
+  }
+
   public int[][] get() {
+    int[][] board = new int[SIZE][SIZE];
+    copy(this.board, board);
     return board;
   }
 
-  public int degree() {
+  public int get(int row, int col) {
+    return board[row][col];
+  }
+
+  public boolean isEmpty(int row, int col) {
+    return board[row][col] == EMPTY;
+  }
+
+  public boolean set(int row, int col, int number){
+    assert number >= 1 && number <= 9;
+    if (isOk(row, col, number)) {
+      board[row][col] = number;
+      degree++;
+      return true;
+    } else return false;
+  }
+
+  public void unset(int row, int col) {
+    if (!isEmpty(row, col)) {
+      board[row][col] = EMPTY;
+      degree--;
+    }
+  }
+
+  private int copy(int[][] source, int[][] dest) {
+    int degree = 0;
+    for (int row = 0; row < SIZE; row++) {
+      for (int col = 0; col < SIZE; col++) {
+        dest[row][col] = source[row][col];
+        if (dest[row][col] != EMPTY) degree++;
+      }
+    }
     return degree;
+  }
+
+  private boolean isOk(int row, int col, int number) {
+    return !isInRow(row, number) && !isInCol(col, number) && !isInBox(row, col, number);
+  }
+
+  private boolean isInRow(int row, int number) {
+    for (int i = 0; i < SIZE; i++) {
+      if (board[row][i] == number) return true;
+    }
+
+    return false;
+  }
+
+  private boolean isInCol(int col, int number) {
+    for (int i = 0; i < SIZE; i++) {
+      if (board[i][col] == number) return true;
+    }
+
+    return false;
+  }
+
+  private boolean isInBox(int row, int col, int number) {
+    int r = row - row % BOX;
+    int c = col - col % BOX;
+
+    for (int i = r; i < r + BOX; i++) {
+      for (int j = c; j < c + BOX; j++) {
+        if (board[i][j] == number) return true;
+      }
+    }
+    return false;
   }
 
   public void flip() {

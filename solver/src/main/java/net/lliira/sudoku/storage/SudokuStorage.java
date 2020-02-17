@@ -74,7 +74,7 @@ public class SudokuStorage {
   }
 
   private void expandAndAdd(Sudoku sudoku) {
-    var baseSudoku = new Sudoku(sudoku.get());
+    var baseSudoku = sudoku.copy();
     baseSudokus.add(baseSudoku);
 
     sudokuIndices.put(sudoku.toString(), baseSudoku);

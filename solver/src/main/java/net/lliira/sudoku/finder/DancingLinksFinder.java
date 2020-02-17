@@ -1,30 +1,34 @@
 package net.lliira.sudoku.finder;
 
+import net.lliira.sudoku.common.Sudoku;
 import net.lliira.sudoku.common.dlx.DancingLinks;
 import net.lliira.sudoku.common.dlx.DancingMatrixHelper;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class DancingLinksFinder extends SudokuFinder {
+public class DancingLinksFinder implements SudokuFinder {
 
-  private final int limit;
   private final DancingMatrixHelper matrixHelper;
 
-  public DancingLinksFinder(int[][] board, int limit) {
-    super(board);
-    this.limit = limit;
-    matrixHelper = new DancingMatrixHelper(SIZE, BOX);
+  public DancingLinksFinder() {
+    matrixHelper = new DancingMatrixHelper(Sudoku.SIZE, Sudoku.BOX);
   }
 
   @Override
-  public List<int[][]> find() {
-    int[][] cover = matrixHelper.convertInCoverMatrix(board);
+  public  List<Sudoku> find(Sudoku sudoku) {
+    return find(sudoku, DancingLinks.NO_LIMIT);
+  }
+
+  @Override
+  public List<Sudoku> find(Sudoku sudoku, int limit) {
+    int[][] cover = matrixHelper.convertInCoverMatrix(sudoku.get());
     DancingLinks dlx = new DancingLinks(cover, limit);
     dlx.process(0);
-    List<int[][]> solutions = new LinkedList<>();
+    List<Sudoku> solutions = new LinkedList<>();
     for (var result : dlx.results) {
-      solutions.add(matrixHelper.convertDLXListToGrid(result));
+      Sudoku solution = new Sudoku(matrixHelper.convertDLXListToGrid(result));
+      solutions.add(solution);
     }
     return solutions;
   }
