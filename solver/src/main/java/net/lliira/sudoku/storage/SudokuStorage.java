@@ -31,7 +31,11 @@ public class SudokuStorage {
     return baseSudokus.toArray(new Sudoku[0]);
   }
 
-  public boolean addSudoku(Sudoku sudoku) {
+  public synchronized int size() {
+    return baseSudokus.size();
+  }
+
+  public synchronized boolean addSudoku(Sudoku sudoku) {
     if (isDuplicate(sudoku)) return false;
 
     expandAndAdd(sudoku);
